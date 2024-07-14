@@ -64,6 +64,9 @@ function getScore (player, computer){
 let playerScore = 0;
 let computerScore = 0;
 
+//declare player result from each round whether win or lose
+let playerResultText;
+
 //a play round function which plays a single round and return the result
 function playRound (playerChoice, computerChoice){
     const gameResult = getScore(playerChoice, computerChoice);
@@ -73,10 +76,13 @@ function playRound (playerChoice, computerChoice){
     console.log("Computer choice is: " + computerChoice);
     if (playerResult === 1) {
         console.log('You win this round')
+        playerResultText = 'You won this round';
     } else if (computerResult === 1) {
         console.log('You lost this round')
+        playerResultText = 'You lost this round';
     } else {
         console.log('It is a draw')
+        playerResultText = 'You drew this round';
     }
     playerScore += playerResult;
     computerScore += computerResult;
@@ -118,6 +124,8 @@ choiceMenu.addEventListener('click', (event) => {
 
     playRound(playerChoice, computerChoice);
 
+
+
     let roundPlayed = new CustomEvent('roundPlayed', {
             detail: {
                 playerChoice: playerChoice,
@@ -130,14 +138,23 @@ choiceMenu.addEventListener('click', (event) => {
     resultLog.dispatchEvent(roundPlayed);
 })
 
-scoreBoard.addEventListener('roundPlayed', (event) => {
+scoreBoard.addEventListener('roundPlayed', () => {
     playerScoreTxt.textContent = `Player's score: ${playerScore}`;
     computerScoreTxt.textContent = `Computer's socre: ${computerScore}`;
 })
 
-resultLog.addEventListener('roundPlayed', (even) => {
-    let roundLog = document.createElement("p");
+resultLog.addEventListener('roundPlayed', (event) => {
+    const roundLog = document.createElement("p");
+    const playerRoundResult = document.createElement("p");
+    const roundResult = document.createElement("div");
 
-    roundLog.textContent = `Player's choice: ${event.playerChoice}   Computer's Choice: ${event.computerChoice}`   
+    roundLog.textContent = `Player's choice: ${event.detail.playerChoice}   Computer's Choice: ${event.detail.computerChoice}` 
+    playerRoundResult.textContent = playerResultText;
+
+    roundResult.appendChild(roundLog);
+    roundResult.appendChild(playerRoundResult);
+
+    resultLog.appendChild(roundResult);  
+
 })
 
