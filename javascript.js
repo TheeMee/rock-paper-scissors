@@ -1,7 +1,6 @@
 // defines the maximum round number
 const roundNumber = 5;
 
-
 //a function which returns a ramdom computer choice
 function getComputerChoice(){
     const randomNumber = Math.random();
@@ -13,7 +12,7 @@ function getComputerChoice(){
     } else if (randomNumber < 0.666){
         choice = 'paper';
     } else {
-        choice = 'scissors'
+        choice = 'scissors';
     }
 
     // returns that choice by the function
@@ -21,25 +20,18 @@ function getComputerChoice(){
 }
 
 // a function created to prompt user to enter an input
-function getPlayerChoice() {
-    //will keep executing until the function returns
-    while (true) {
-        const choiceInput = prompt("please enter your choice. Choose from: 'rock', 'paper', or 'scissors'")
-        const choice = choiceInput.toLowerCase();
-
-        //if choice is valid, choice is returned by the function
-        //if not the program will continue to reamain true and get exucuted in the while loop
-        switch(choice) {
-            case 'rock':
-            case 'paper':
-            case 'scissors': 
-                return choice;
-            default:
-                alert('input was invalid, please enter valid choice')
-                break;
+function getPlayerChoice(choice) {
+    switch(choice) {
+        case 'rock':
+        case 'paper':
+        case 'scissors': 
+            return choice;
+        default:
+            alert('input was invalid, please enter valid choice')
+            break;
         }
     }
-}
+
 
 //will pass the score for player and computer
 function getScore (player, computer){
@@ -90,21 +82,62 @@ function playRound (playerChoice, computerChoice){
     computerScore += computerResult;
 }
 
-//the play game function which calls the playRound function five times to play five games and declare the eventual winner
-function playGame () {
-    for (let i = 0; i < roundNumber; i++) {
-        console.log("This is round number: "+ (i + 1));
-        let playerChoice  = getPlayerChoice();
-        let computerChoice = getComputerChoice();
-        playRound(playerChoice, computerChoice);
-    }
-    console.log(playerScore);
-    console.log(computerScore);
-    result = (playerScore > computerScore) ? 'Congratulation! you win':
-        (computerScore > playerScore) ? 'You lose!':
-        'It\'s a tie!'
+const choiceMenu = document.querySelector(".buttons-container");
 
-    console.log(result);
-    playerScore = 0;
-    computerScore = 0;
-}
+const rockBtn = document.querySelector("#rockBtn");
+const paperBtn = document.querySelector("#paperBtn");
+const scissorsBtn = document.querySelector("#scissorsBtn");
+
+let playerScoreTxt = document.querySelector("#playerScore"); 
+let computerScoreTxt = document.querySelector("#computerScore");
+
+const scoreBoard = document.querySelector(".scoreBoard");
+
+const resultLog = document.querySelector(".resultLog");
+
+choiceMenu.addEventListener('click', (event) => {
+    let target = event.target;
+
+    let playerChoice;
+
+    switch(target){
+        case rockBtn:
+            playerChoice = 'rock';
+            break;
+        case paperBtn:
+            playerChoice = 'paper';
+            break;
+        case scissorsBtn:
+            playerChoice = 'scissors';
+            break;
+        default:
+            break;
+    }
+
+    const computerChoice = getComputerChoice();    
+
+    playRound(playerChoice, computerChoice);
+
+    let roundPlayed = new CustomEvent('roundPlayed', {
+            detail: {
+                playerChoice: playerChoice,
+                computerChoice: computerChoice
+            }
+        }
+    )
+
+    scoreBoard.dispatchEvent(roundPlayed); 
+    resultLog.dispatchEvent(roundPlayed);
+})
+
+scoreBoard.addEventListener('roundPlayed', (event) => {
+    playerScoreTxt.textContent = `Player's score: ${playerScore}`;
+    computerScoreTxt.textContent = `Computer's socre: ${computerScore}`;
+})
+
+resultLog.addEventListener('roundPlayed', (even) => {
+    let roundLog = document.createElement("p");
+
+    roundLog.textContent = `Player's choice: ${event.playerChoice}   Computer's Choice: ${event.computerChoice}`   
+})
+
