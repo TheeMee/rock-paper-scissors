@@ -1,9 +1,6 @@
 // defines the maximum round number
 const roundNumber = 5;
 
-//defines the number of round played at the moment
-let numRoundPlayed = 0;
-
 //a function which returns a ramdom computer choice
 function getComputerChoice(){
     const randomNumber = Math.random();
@@ -93,16 +90,16 @@ function playRound (playerChoice, computerChoice){
 
 
 //returns result of five rounds in string to fiveRoundTxt element
-function fiveRoundResult() {
-    let resultText;
+function winnerResult() {
+    let winnerText;
     if (playerScore > computerScore) {
-        resultText = 'Congratulations, you won out of five rounds';
+        winnerText = `Congratulations! you won ${playerScore} to ${computerScore}`;
     } else if (computerScore > playerScore) {
-        resultText = 'You lost this out of five rounds, better luck next time!';
+        winnerText = `You lost this ${playerScore} to ${computerScore}, better luck next time!`;
     } else {
-        resultText = 'You drew out of five rounds, could be better or worse!';
+        winnerText = 'You drew somehow, could be better or worse!';
     }
-    return resultText;
+    return winnerText;
 }
 
 //delcare all DOM nodes
@@ -153,8 +150,6 @@ choiceMenu.addEventListener('click', (event) => {
         }
     )
 
-    numRoundPlayed += 1;
-
     scoreBoard.dispatchEvent(roundPlayed); 
     resultLog.dispatchEvent(roundPlayed);
 })
@@ -178,13 +173,12 @@ resultLog.addEventListener('roundPlayed', (event) => {
     resultLog.appendChild(roundResult);  
 
     //if game has been played more than five rounds result will be decided
-    if (numRoundPlayed >= 5) {
-        const fiveRoundTxt = document.querySelector("p")
-        fiveRoundTxt.textContent = fiveRoundResult();
+    if (playerScore >= 5 || computerScore >= 5) {
+        const winnerTxt = document.querySelector("p")
+        winnerTxt.textContent = winnerResult();
 
-        resultLog.appendChild(fiveRoundTxt);
+        resultLog.appendChild(winnerTxt);
 
-        numRoundPlayed = 0;
         playerScore = 0;
         computerScore = 0;
     }
