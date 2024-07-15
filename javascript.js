@@ -1,6 +1,9 @@
 // defines the maximum round number
 const roundNumber = 5;
 
+//defines the number of round played at the moment
+let numRoundPlayed = 0;
+
 //a function which returns a ramdom computer choice
 function getComputerChoice(){
     const randomNumber = Math.random();
@@ -88,6 +91,21 @@ function playRound (playerChoice, computerChoice){
     computerScore += computerResult;
 }
 
+
+//returns result of five rounds in string to fiveRoundTxt element
+function fiveRoundResult() {
+    let resultText;
+    if (playerScore > computerScore) {
+        resultText = 'Congratulations, you won out of five rounds';
+    } else if (computerScore > playerScore) {
+        resultText = 'You lost this out of five rounds, better luck next time!';
+    } else {
+        resultText = 'You drew out of five rounds, could be better or worse!';
+    }
+    return resultText;
+}
+
+//delcare all DOM nodes
 const choiceMenu = document.querySelector(".buttons-container");
 
 const rockBtn = document.querySelector("#rockBtn");
@@ -101,6 +119,7 @@ const scoreBoard = document.querySelector(".scoreBoard");
 
 const resultLog = document.querySelector(".resultLog");
 
+//register use choice on button click
 choiceMenu.addEventListener('click', (event) => {
     let target = event.target;
 
@@ -125,7 +144,7 @@ choiceMenu.addEventListener('click', (event) => {
     playRound(playerChoice, computerChoice);
 
 
-
+    //custom event contain info about player choice to use later
     let roundPlayed = new CustomEvent('roundPlayed', {
             detail: {
                 playerChoice: playerChoice,
@@ -133,6 +152,8 @@ choiceMenu.addEventListener('click', (event) => {
             }
         }
     )
+
+    numRoundPlayed += 1;
 
     scoreBoard.dispatchEvent(roundPlayed); 
     resultLog.dispatchEvent(roundPlayed);
@@ -156,5 +177,19 @@ resultLog.addEventListener('roundPlayed', (event) => {
 
     resultLog.appendChild(roundResult);  
 
+    //if game has been played more than five rounds result will be decided
+    if (numRoundPlayed >= 5) {
+        const fiveRoundTxt = document.querySelector("p")
+        fiveRoundTxt.textContent = fiveRoundResult();
+
+        resultLog.appendChild(fiveRoundTxt);
+
+        numRoundPlayed = 0;
+        playerScore = 0;
+        computerScore = 0;
+    }
+
 })
+
+
 
