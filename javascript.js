@@ -150,13 +150,8 @@ choiceMenu.addEventListener('click', (event) => {
         }
     )
 
-    scoreBoard.dispatchEvent(roundPlayed); 
     resultLog.dispatchEvent(roundPlayed);
-})
-
-scoreBoard.addEventListener('roundPlayed', () => {
-    playerScoreTxt.textContent = `Player's score: ${playerScore}`;
-    computerScoreTxt.textContent = `Computer's socre: ${computerScore}`;
+    scoreBoard.dispatchEvent(roundPlayed); 
 })
 
 resultLog.addEventListener('roundPlayed', (event) => {
@@ -174,7 +169,7 @@ resultLog.addEventListener('roundPlayed', (event) => {
 
     //if game has been played more than five rounds result will be decided
     if (playerScore >= 5 || computerScore >= 5) {
-        const winnerTxt = document.querySelector("p")
+        const winnerTxt = document.createElement("p")
         winnerTxt.textContent = winnerResult();
 
         resultLog.appendChild(winnerTxt);
@@ -182,7 +177,11 @@ resultLog.addEventListener('roundPlayed', (event) => {
         playerScore = 0;
         computerScore = 0;
     }
+})
 
+scoreBoard.addEventListener('roundPlayed', () => {
+    playerScoreTxt.textContent = `Player's score: ${playerScore}`;
+    computerScoreTxt.textContent = `Computer's score: ${computerScore}`;
 })
 
 
